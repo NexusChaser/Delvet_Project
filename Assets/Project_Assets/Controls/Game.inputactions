@@ -35,9 +35,18 @@
             "id": "cb49fc6b-040d-4b76-8c38-1cae92dcbe9d",
             "actions": [
                 {
-                    "name": "New action",
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "99f75f9d-8a74-4e8c-9a89-47fcf59b5062",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Jump",
                     "type": "Button",
-                    "id": "8bf7201f-3ac4-48b9-9df3-507d25137b56",
+                    "id": "113182c5-260c-43cd-a3e4-3ce5bb2c174b",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -46,13 +55,68 @@
             ],
             "bindings": [
                 {
-                    "name": "",
-                    "id": "2bf8d6ba-b7b8-4d39-9a5d-0e0bf6955a77",
-                    "path": "",
+                    "name": "WASD",
+                    "id": "c462049a-d58c-4694-8bd9-61e797cb2a33",
+                    "path": "2DVector",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "6b6aba7b-11ba-4a18-a83c-85989a28501d",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyboardAndMouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "2e19eacc-5f58-41c2-9f5c-53764eaa0367",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyboardAndMouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "cf3c6542-6c11-426e-9d8b-6f415803e7e4",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyboardAndMouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "62f78a22-ef9f-4393-ac0a-e5fcd1075d39",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyboardAndMouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "0d988ff1-c05b-4423-ab2d-747b48b8d6cf",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyboardAndMouse",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -90,7 +154,13 @@
         {
             "name": "Mobile",
             "bindingGroup": "Mobile",
-            "devices": []
+            "devices": [
+                {
+                    "devicePath": "<Touchscreen>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
         }
     ]
 }

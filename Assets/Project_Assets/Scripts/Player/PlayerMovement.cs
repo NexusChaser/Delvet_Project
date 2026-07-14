@@ -8,28 +8,60 @@ namespace CrunchStreet.Player
     [RequireComponent(typeof(CharacterBlackboard))]
     public class PlayerMovement : MonoBehaviour
     {
-        [Header("Movement Settings")]
-        public float moveSpeed = 5f;
-        public float rotationSpeed = 10f;
+        [Header("References")]
+        [SerializeField] private Rigidbody rb;
+        [SerializeField] private CharacterBlackboard blackboard;
+        [SerializeField] private AnimancerComponent animancer;
 
         [Header("Animations")]
-        public AnimancerComponent animancer;
-        public AnimationClip idleClip;
-        public AnimationClip walkClip;
-        
-        private Rigidbody rb;
-        private CharacterBlackboard blackboard;
+        [SerializeField] private AnimationClip idleClip;
+        [SerializeField] private AnimationClip walkClip;
+
+        [Header("Movement Settings")]
+        [SerializeField] private float moveSpeed = 5f;
+        [SerializeField] private float rotationSpeed = 10f;
+        [SerializeField] private float autoRotationSpeed = 25f;
+
+        [Header("Movement Direction Mapping")]
+        [SerializeField] private bool swapAxes = true; // Swaps X and Z axes (useful if level is aligned with Z)
+        [SerializeField] private Vector2 inputScale = new Vector2(1f, 1f); // Multiply axes to invert them (e.g. -1 to invert)
+
         private Vector2 moveInput;
+        private Quaternion targetRotation;
+        private bool hasTargetRotation = false;
 
         private void Awake()
         {
-            rb = GetComponent<Rigidbody>();
-            blackboard = GetComponent<CharacterBlackboard>();
-            
+            if (rb == null)
+            {
+                rb = GetComponent<Rigidbody>();
+                if (rb == null)
+                {
+                    Debug.LogError("Rigidbody reference is missing on " + gameObject.name, this);
+                }
+            }
+
+            if (blackboard == null)
+            {
+                blackboard = GetComponent<CharacterBlackboard>();
+                if (blackboard == null)
+                {
+                    Debug.LogError("CharacterBlackboard reference is missing on " + gameObject.name, this);
+                }
+            }
+
             if (animancer == null)
             {
-                // Try to find it in children (like the Model)
                 animancer = GetComponentInChildren<AnimancerComponent>();
+                if (animancer == null)
+                {
+                    Debug.LogError("AnimancerComponent reference is missing on " + gameObject.name, this);
+                }
+            }
+
+            if (rb != null)
+            {
+                targetRotation = rb.rotation;
             }
         }
 
@@ -41,14 +73,31 @@ namespace CrunchStreet.Player
 
         private void FixedUpdate()
         {
+            if (blackboard == null || rb == null) return;
+
             if (!blackboard.CanMove)
             {
                 rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
-                PlayAnimation(idleClip);
+                if (blackboard.IsGrounded)
+                {
+                    PlayAnimation(idleClip);
+                }
                 return;
             }
 
-            Vector3 moveDir = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
+            // Map input to world direction
+            float xInput = moveInput.x * inputScale.x;
+            float yInput = moveInput.y * inputScale.y;
+
+            Vector3 moveDir;
+            if (swapAxes)
+            {
+                moveDir = new Vector3(yInput, 0f, xInput).normalized;
+            }
+            else
+            {
+                moveDir = new Vector3(xInput, 0f, yInput).normalized;
+            }
 
             // Apply Movement
             Vector3 targetVelocity = moveDir * moveSpeed;
@@ -58,13 +107,29 @@ namespace CrunchStreet.Player
             // Apply Rotation
             if (moveDir != Vector3.zero)
             {
-                Quaternion targetRotation = Quaternion.LookRotation(moveDir);
-                rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
-                PlayAnimation(walkClip);
+                targetRotation = Quaternion.LookRotation(moveDir);
+                hasTargetRotation = true;
+                if (blackboard.IsGrounded)
+                {
+                    PlayAnimation(walkClip);
+                }
             }
             else
             {
-                PlayAnimation(idleClip);
+                if (blackboard.IsGrounded)
+                {
+                    PlayAnimation(idleClip);
+                }
+            }
+
+            if (hasTargetRotation)
+            {
+                float speed = moveDir != Vector3.zero ? rotationSpeed : autoRotationSpeed;
+                rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, speed * Time.fixedDeltaTime);
+                if (Quaternion.Angle(rb.rotation, targetRotation) < 1f)
+                {
+                    rb.rotation = targetRotation;
+                }
             }
         }
         
