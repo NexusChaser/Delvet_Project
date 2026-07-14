@@ -1,5 +1,8 @@
 ﻿<Solution>
+  <Project Path="Animancer.FSM.csproj" />
+  <Project Path="Animancer.csproj" />
+  <Project Path="Animancer.Examples.csproj" />
   <Project Path="AnkleBreaker.UnityMCP.Editor.csproj" />
-  <Project Path="UnityMCP.Editor.Welcome.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="UnityMCP.Editor.Welcome.csproj" />
 </Solution>
