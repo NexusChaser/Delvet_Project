@@ -58,6 +58,26 @@
       },
       "url": "https://package.openupm.com"
     },
+    "com.ivanmurzak.unity.mcp.particlesystem": {
+      "version": "1.2.25",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.ivanmurzak.unity.mcp": "0.83.1",
+        "com.unity.modules.particlesystem": "1.0.0"
+      },
+      "url": "https://package.openupm.com"
+    },
+    "com.ivanmurzak.unity.mcp.probuilder": {
+      "version": "1.2.25",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.ivanmurzak.unity.mcp": "0.83.1",
+        "com.unity.probuilder": "5.2.4"
+      },
+      "url": "https://package.openupm.com"
+    },
     "com.unity.2d.animation": {
       "version": "13.0.5",
       "depth": 1,
@@ -300,6 +320,18 @@
       "depth": 1,
       "source": "registry",
       "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.probuilder": {
+      "version": "6.0.9",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.shadergraph": "17.0.3",
+        "com.unity.modules.imgui": "1.0.0",
+        "com.unity.modules.physics": "1.0.0",
+        "com.unity.settings-manager": "1.0.3"
+      },
       "url": "https://packages.unity.com"
     },
     "com.unity.profiling.core": {
