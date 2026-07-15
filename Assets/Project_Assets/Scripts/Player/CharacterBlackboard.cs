@@ -8,5 +8,7 @@ namespace CrunchStreet.Player
         public bool IsGrounded = true;
         public bool IsAttacking = false;
         public bool IsDodging = false;
+        public bool IsJumping = false;
+        public bool IsLanding = false;
     }
 }

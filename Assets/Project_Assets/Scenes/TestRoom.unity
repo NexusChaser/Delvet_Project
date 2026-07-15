@@ -179,7 +179,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 50
   field of view: 60.000004
   orthographic: 0
   orthographic size: 5
@@ -525,7 +525,7 @@ Transform:
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: 1.536, y: 4.457, z: -2.661}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -961,8 +961,24 @@ MonoBehaviour:
   rb: {fileID: 1109103840}
   blackboard: {fileID: 1109103844}
   animancer: {fileID: 1109103842}
-  idleClip: {fileID: 7400000, guid: 664d2fb3a87d96346a11f067b703e2ac, type: 3}
-  walkClip: {fileID: 7400000, guid: e10d561b377b9914698581dd2984da93, type: 3}
+  idleTransition:
+    _FadeDuration: 0.25
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Clip: {fileID: 7400000, guid: 664d2fb3a87d96346a11f067b703e2ac, type: 3}
+    _Speed: 1
+    _NormalizedStartTime: NaN
+  walkTransition:
+    _FadeDuration: 0.25
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Clip: {fileID: 7400000, guid: e10d561b377b9914698581dd2984da93, type: 3}
+    _Speed: 1
+    _NormalizedStartTime: NaN
   moveSpeed: 5
   rotationSpeed: 15
   autoRotationSpeed: 30
@@ -984,6 +1000,8 @@ MonoBehaviour:
   IsGrounded: 1
   IsAttacking: 0
   IsDodging: 0
+  IsJumping: 0
+  IsLanding: 0
 --- !u!114 &1109103845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1000,8 +1018,34 @@ MonoBehaviour:
   blackboard: {fileID: 1109103844}
   animancer: {fileID: 1109103842}
   groundPivot: {fileID: 1230755325}
-  jumpClip: {fileID: 7400000, guid: 56605589728304d4aa5197a7a2ab5582, type: 3}
-  jumpForce: 6
+  jumpStartTransition:
+    _FadeDuration: 0.25
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Clip: {fileID: 7400000, guid: 8b57cc195b874724f89f98bc08d2f78f, type: 3}
+    _Speed: 2
+    _NormalizedStartTime: NaN
+  jumpFallTransition:
+    _FadeDuration: 0.25
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Clip: {fileID: -203655887218126122, guid: 56359b940c1cc164a89a2c22e657e3a9, type: 3}
+    _Speed: 1
+    _NormalizedStartTime: NaN
+  jumpLandTransition:
+    _FadeDuration: 0.25
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Clip: {fileID: -8481709605947105597, guid: 8b57cc195b874724f89f98bc08d2f78f, type: 3}
+    _Speed: 2.2
+    _NormalizedStartTime: NaN
+  jumpForce: 7
   groundLayer:
     serializedVersion: 2
     m_Bits: 8

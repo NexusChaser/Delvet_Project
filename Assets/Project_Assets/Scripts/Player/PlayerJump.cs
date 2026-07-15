@@ -8,6 +8,8 @@ namespace CrunchStreet.Player
     [RequireComponent(typeof(CharacterBlackboard))]
     public class PlayerJump : MonoBehaviour
     {
+        private enum JumpState { None, Ascending, Falling, Landing }
+
         [Header("References")]
         [SerializeField] private Rigidbody rb;
         [SerializeField] private CharacterBlackboard blackboard;
@@ -15,7 +17,9 @@ namespace CrunchStreet.Player
         [SerializeField] private Transform groundPivot;
 
         [Header("Animations")]
-        [SerializeField] private AnimationClip jumpClip;
+        [SerializeField] private ClipTransition jumpStartTransition;
+        [SerializeField] private ClipTransition jumpFallTransition;
+        [SerializeField] private ClipTransition jumpLandTransition;
 
         [Header("Jump Settings")]
         [SerializeField] private float jumpForce = 6f;
@@ -30,6 +34,9 @@ namespace CrunchStreet.Player
         [SerializeField] private bool showAlways = true;
         [SerializeField] private Color airColor = Color.green;
         [SerializeField] private Color groundedColor = Color.red;
+
+        private JumpState currentJumpState = JumpState.None;
+        private bool hasLeftGround = false;
 
         private void Awake()
         {
@@ -62,11 +69,9 @@ namespace CrunchStreet.Player
 
             if (groundPivot == null)
             {
-                // Try to find a child named GroundPivot
                 groundPivot = transform.Find("GroundPivot");
                 if (groundPivot == null)
                 {
-                    // Fallback to transform itself so the script doesn't crash
                     groundPivot = transform;
                     Debug.LogError("GroundPivot transform reference is missing on " + gameObject.name + ". Falling back to self.", this);
                 }
@@ -76,6 +81,7 @@ namespace CrunchStreet.Player
         private void FixedUpdate()
         {
             UpdateGroundedState();
+            UpdateJumpState();
         }
 
         private void UpdateGroundedState()
@@ -86,6 +92,70 @@ namespace CrunchStreet.Player
             bool grounded = Physics.CheckSphere(origin, groundCheckRadius, groundLayer);
             
             blackboard.IsGrounded = grounded;
+        }
+
+        private void UpdateJumpState()
+        {
+            if (blackboard == null || rb == null || animancer == null) return;
+
+            if (!blackboard.IsGrounded)
+            {
+                // We are in the air
+                if (currentJumpState == JumpState.Ascending)
+                {
+                    // We just left the ground after jumping
+                    hasLeftGround = true;
+                }
+                else if (currentJumpState == JumpState.None)
+                {
+                    // We walked off an edge without jumping - go straight to falling
+                    hasLeftGround = true;
+                    blackboard.IsJumping = true;
+                    currentJumpState = JumpState.Falling;
+                    PlayAnimation(jumpFallTransition);
+                }
+            }
+            else
+            {
+                // We are grounded
+                // Only allow landing if we actually left the ground first
+                if (hasLeftGround && currentJumpState == JumpState.Falling)
+                {
+                    currentJumpState = JumpState.Landing;
+                    blackboard.IsLanding = true;
+                    blackboard.CanMove = false; // Block movement during landing
+                    hasLeftGround = false;
+                    
+                    if (jumpLandTransition != null)
+                    {
+                        var state = animancer.Layers[0].Play(jumpLandTransition);
+                        if (state != null)
+                        {
+                            state.Events.OnEnd = () => 
+                            {
+                                currentJumpState = JumpState.None;
+                                blackboard.IsJumping = false;
+                                blackboard.IsLanding = false;
+                                blackboard.CanMove = true; // Restore movement
+                                state.Events.OnEnd = null;
+                            };
+                        }
+                        else
+                        {
+                            currentJumpState = JumpState.None;
+                            blackboard.IsLanding = false;
+                            blackboard.CanMove = true;
+                        }
+                    }
+                    else
+                    {
+                        currentJumpState = JumpState.None;
+                        blackboard.IsJumping = false;
+                        blackboard.IsLanding = false;
+                        blackboard.CanMove = true;
+                    }
+                }
+            }
         }
 
         // Called via Unity Events from PlayerInput
@@ -101,22 +171,39 @@ namespace CrunchStreet.Player
         {
             if (blackboard == null || rb == null) return;
 
-            if (blackboard.IsGrounded && !blackboard.IsAttacking && !blackboard.IsDodging)
+            if (blackboard.IsGrounded && !blackboard.IsAttacking && !blackboard.IsDodging && currentJumpState == JumpState.None)
             {
-                // Set y velocity to 0 first to ensure consistent jump height
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
                 
-                PlayAnimation(jumpClip);
+                hasLeftGround = false;
+                blackboard.IsJumping = true;
+                currentJumpState = JumpState.Ascending;
+                
+                if (animancer != null && jumpStartTransition != null)
+                {
+                    var state = animancer.Layers[0].Play(jumpStartTransition);
+                    if (state != null)
+                    {
+                        state.Events.OnEnd = () =>
+                        {
+                            if (currentJumpState == JumpState.Ascending)
+                            {
+                                currentJumpState = JumpState.Falling;
+                                PlayAnimation(jumpFallTransition);
+                            }
+                            state.Events.OnEnd = null;
+                        };
+                    }
+                }
             }
         }
 
-        private void PlayAnimation(AnimationClip clip)
+        private void PlayAnimation(ClipTransition transition)
         {
-            if (animancer != null && clip != null)
+            if (animancer != null && transition != null)
             {
-                // Play the jump animation on Layer 0 (Base Layer)
-                animancer.Layers[0].Play(clip, 0.1f);
+                animancer.Layers[0].Play(transition);
             }
         }
 
@@ -141,18 +228,12 @@ namespace CrunchStreet.Player
             Transform pivot = groundPivot != null ? groundPivot : transform;
             bool isGrounded = blackboard != null && blackboard.IsGrounded;
             
-            // 1. Set color based on ground detection
             Gizmos.color = isGrounded ? groundedColor : airColor;
             
             Vector3 origin = pivot.position + groundCheckOffset;
 
-            // 2. Draw small filled sphere at groundPivot
             Gizmos.DrawSphere(pivot.position, 0.05f);
-
-            // 3. Draw line from pivot to the center of the check sphere
             Gizmos.DrawLine(pivot.position, origin);
-
-            // 4. Draw ground check wire sphere
             Gizmos.DrawWireSphere(origin, groundCheckRadius);
         }
     }

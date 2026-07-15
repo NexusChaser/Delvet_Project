@@ -14,8 +14,8 @@ namespace CrunchStreet.Player
         [SerializeField] private AnimancerComponent animancer;
 
         [Header("Animations")]
-        [SerializeField] private AnimationClip idleClip;
-        [SerializeField] private AnimationClip walkClip;
+        [SerializeField] private ClipTransition idleTransition;
+        [SerializeField] private ClipTransition walkTransition;
 
         [Header("Movement Settings")]
         [SerializeField] private float moveSpeed = 5f;
@@ -78,9 +78,9 @@ namespace CrunchStreet.Player
             if (!blackboard.CanMove)
             {
                 rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
-                if (blackboard.IsGrounded)
+                if (blackboard.IsGrounded && !blackboard.IsJumping && !blackboard.IsLanding)
                 {
-                    PlayAnimation(idleClip);
+                    PlayAnimation(idleTransition);
                 }
                 return;
             }
@@ -109,16 +109,16 @@ namespace CrunchStreet.Player
             {
                 targetRotation = Quaternion.LookRotation(moveDir);
                 hasTargetRotation = true;
-                if (blackboard.IsGrounded)
+                if (blackboard.IsGrounded && !blackboard.IsJumping && !blackboard.IsLanding)
                 {
-                    PlayAnimation(walkClip);
+                    PlayAnimation(walkTransition);
                 }
             }
             else
             {
-                if (blackboard.IsGrounded)
+                if (blackboard.IsGrounded && !blackboard.IsJumping && !blackboard.IsLanding)
                 {
-                    PlayAnimation(idleClip);
+                    PlayAnimation(idleTransition);
                 }
             }
 
@@ -133,12 +133,11 @@ namespace CrunchStreet.Player
             }
         }
         
-        private void PlayAnimation(AnimationClip clip)
+        private void PlayAnimation(ClipTransition transition)
         {
-            if (animancer != null && clip != null)
+            if (animancer != null && transition != null)
             {
-                // Play the clip on Layer 0 (Base Layer)
-                animancer.Layers[0].Play(clip, 0.25f);
+                animancer.Layers[0].Play(transition);
             }
         }
     }
