@@ -97,6 +97,7 @@ namespace CrunchStreet.Player
         private void UpdateJumpState()
         {
             if (blackboard == null || rb == null || animancer == null) return;
+            if (blackboard.IsDead) return;
 
             if (!blackboard.IsGrounded)
             {
@@ -170,6 +171,7 @@ namespace CrunchStreet.Player
         private void TryJump()
         {
             if (blackboard == null || rb == null) return;
+            if (blackboard.IsDead) return;
 
             if (blackboard.IsGrounded && !blackboard.IsAttacking && !blackboard.IsDodging && currentJumpState == JumpState.None)
             {

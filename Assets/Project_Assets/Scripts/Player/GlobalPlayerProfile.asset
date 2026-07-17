@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71d026394339f7c44ad65d7107379357, type: 3}
+  m_Name: GlobalPlayerProfile
+  m_EditorClassIdentifier: Assembly-CSharp::CrunchStreet.Player.GlobalPlayerProfileSO
+  maxHealth: 100
+  moveSpeed: 5
+  baseDamage: 10
+  moveset: {fileID: 11400000, guid: c1d8310269314fc4e8fbdee4691a1637, type: 2}

@@ -119,6 +119,106 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &152363639
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 152363640}
+  - component: {fileID: 152363641}
+  m_Layer: 7
+  m_Name: LightAttack
+  m_TagString: Untagged
+  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &152363640
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152363639}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.964, z: 0.766}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1734771049}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &152363641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152363639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0de0b515b63d1b4aa298c59faeb4a20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CrunchStreet.Combat.BasicAttackHitbox
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  targetType: 1
+  playerCombat: {fileID: 1109103848}
+  attackSO: {fileID: 11400000, guid: a7c6417862d73934daa274bc0b737ac0, type: 2}
+--- !u!1 &242602700
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 242602701}
+  - component: {fileID: 242602702}
+  m_Layer: 7
+  m_Name: HeavyAttack
+  m_TagString: Untagged
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &242602701
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 242602700}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.797, z: 0.975}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1734771049}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &242602702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 242602700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0de0b515b63d1b4aa298c59faeb4a20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CrunchStreet.Combat.BasicAttackHitbox
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  targetType: 1
+  playerCombat: {fileID: 1109103848}
+  attackSO: {fileID: 11400000, guid: cbde4d6a4ea8a104cb9a75916bf5865d, type: 2}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,7 +398,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 345619349}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -333,7 +433,7 @@ GameObject:
   - component: {fileID: 409905971}
   - component: {fileID: 409905970}
   - component: {fileID: 409905969}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -568,6 +668,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 345619349}
     m_Modifications:
+    - target: {fileID: -9070493210130169274, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.93813
@@ -620,13 +724,121 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7657966619581158213, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -6370085079684087283, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -6170625038081293824, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -5561550452697079657, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -5250671553183438521, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -5195048882033904264, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -4728426434207774260, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -4332706925441422008, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -3542885339558904099, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -3086436065929644917, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -2084811680363313996, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -1781356600409242780, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -1703473491307067327, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -1200856079203341021, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -751476226918971245, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -290750445479886849, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -203856693384778745, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 9171100556185337, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
       propertyPath: m_Name
       value: Rhino Rampart - Tech Nova
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1082271958561512970, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339101018200438765, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2715566404302941441, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2898355158428612036, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3135921509060577837, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3313233789042348312, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3948933247560734027, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817898888258712963, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -643,6 +855,37 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: de0f7bd07a202be4d96a5123b372563c, type: 3}
   m_PrefabInstance: {fileID: 525482437}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &680889790
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 680889791}
+  m_Layer: 7
+  m_Name: Chest
+  m_TagString: Untagged
+  m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &680889791
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680889790}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.239, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1109103841}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &738180651
 GameObject:
   m_ObjectHideFlags: 0
@@ -792,7 +1035,11 @@ GameObject:
   - component: {fileID: 1109103844}
   - component: {fileID: 1109103843}
   - component: {fileID: 1109103845}
-  m_Layer: 0
+  - component: {fileID: 1109103847}
+  - component: {fileID: 1109103846}
+  - component: {fileID: 1109103848}
+  - component: {fileID: 1109103849}
+  m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -860,6 +1107,38 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 113182c5-260c-43cd-a3e4-3ce5bb2c174b
     m_ActionName: 'Game/Jump[/Keyboard/space]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1109103849}
+        m_TargetAssemblyTypeName: CrunchStreet.Player.PlayerCombatInput, Assembly-CSharp
+        m_MethodName: OnLightAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: b3c435d4-f8bd-411b-be7a-9c3faebef244
+    m_ActionName: 'Game/LightAttack[/Keyboard/r]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1109103849}
+        m_TargetAssemblyTypeName: CrunchStreet.Player.PlayerCombatInput, Assembly-CSharp
+        m_MethodName: OnHeavyAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: e5614d5a-a186-477c-845d-46749d50027c
+    m_ActionName: 'Game/HeavyAttack[/Keyboard/f]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: KeyboardAndMouse
   m_DefaultActionMap: Game
@@ -930,6 +1209,8 @@ Transform:
   m_Children:
   - {fileID: 345619349}
   - {fileID: 1230755325}
+  - {fileID: 680889791}
+  - {fileID: 1734771049}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1109103842
@@ -984,6 +1265,7 @@ MonoBehaviour:
   autoRotationSpeed: 30
   swapAxes: 1
   inputScale: {x: 1, y: -1}
+  requireNewInputAfterLanding: 0
 --- !u!114 &1109103844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1002,6 +1284,7 @@ MonoBehaviour:
   IsDodging: 0
   IsJumping: 0
   IsLanding: 0
+  IsDead: 0
 --- !u!114 &1109103845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1048,13 +1331,82 @@ MonoBehaviour:
   jumpForce: 7
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 64
   groundCheckOffset: {x: 0, y: -0.4, z: 0}
   groundCheckRadius: 0.3
   showGizmos: 1
   showAlways: 1
   airColor: {r: 0, g: 1, b: 0, a: 1}
   groundedColor: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &1109103846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109103837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a26d3f993abb6a4693b7a1d6223952f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CrunchStreet.Player.PlayerHealth
+  isInvincible: 0
+  currentHealth: 0
+  playerProfile: {fileID: 11400000, guid: 85543211e4ceefc449381de7d8086e39, type: 2}
+  animancer: {fileID: 1109103842}
+  blackboard: {fileID: 1109103844}
+  entityIdentifier: {fileID: 1109103847}
+  deathTransition:
+    _FadeDuration: 0.25
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Clip: {fileID: 7400000, guid: 838b18356417d5f4885d981f2b65f301, type: 3}
+    _Speed: 0.8
+    _NormalizedStartTime: NaN
+--- !u!114 &1109103847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109103837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bc39b1b024427e48ac9ebb453ba3860, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CrunchStreet.Core.EntityIdentifier
+  entityType: 0
+  pivot: {fileID: 680889791}
+  isDetectable: 1
+--- !u!114 &1109103848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109103837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 952226cee5885464db4dbbc231de9689, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CrunchStreet.Player.PlayerCombat
+  blackboard: {fileID: 1109103844}
+  playerProfile: {fileID: 11400000, guid: 85543211e4ceefc449381de7d8086e39, type: 2}
+  animancer: {fileID: 1109103842}
+--- !u!114 &1109103849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109103837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 305a37d12fd36454189c432ca7052c6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CrunchStreet.Player.PlayerCombatInput
 --- !u!1 &1230755324
 GameObject:
   m_ObjectHideFlags: 0
@@ -1064,7 +1416,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1230755325}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GroundPivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1213,6 +1565,39 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1734771048
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1734771049}
+  m_Layer: 7
+  m_Name: Hitboxes
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1734771049
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1734771048}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 152363640}
+  - {fileID: 242602701}
+  m_Father: {fileID: 1109103841}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

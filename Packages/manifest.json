@@ -1,11 +1,13 @@
 {
   "dependencies": {
     "com.anklebreaker.unity-mcp": "https://github.com/AnkleBreaker-Studio/unity-mcp-plugin.git",
-    "com.ivanmurzak.unity.mcp": "0.83.1",
+    "com.ivanmurzak.unity.mcp": "0.84.3",
     "com.ivanmurzak.unity.mcp.animation": "1.2.25",
     "com.ivanmurzak.unity.mcp.cinemachine": "1.0.11",
     "com.ivanmurzak.unity.mcp.inputsystem": "1.0.11",
     "com.ivanmurzak.unity.mcp.navigation": "1.0.11",
+    "com.ivanmurzak.unity.mcp.particlesystem": "1.2.25",
+    "com.ivanmurzak.unity.mcp.probuilder": "1.2.25",
     "com.unity.ai.navigation": "2.0.13",
     "com.unity.cinemachine": "3.1.7",
     "com.unity.device-simulator.devices": "1.0.1",
@@ -51,9 +53,7 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.ivanmurzak.unity.mcp.particlesystem": "1.2.25",
-    "com.ivanmurzak.unity.mcp.probuilder": "1.2.25"
+    "com.unity.modules.xr": "1.0.0"
   },
   "scopedRegistries": [
     {

@@ -10,5 +10,6 @@ namespace CrunchStreet.Player
         public bool IsDodging = false;
         public bool IsJumping = false;
         public bool IsLanding = false;
+        public bool IsDead = false;
     }
 }

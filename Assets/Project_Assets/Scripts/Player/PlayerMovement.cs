@@ -25,10 +25,13 @@ namespace CrunchStreet.Player
         [Header("Movement Direction Mapping")]
         [SerializeField] private bool swapAxes = true; // Swaps X and Z axes (useful if level is aligned with Z)
         [SerializeField] private Vector2 inputScale = new Vector2(1f, 1f); // Multiply axes to invert them (e.g. -1 to invert)
+        [SerializeField] private bool requireNewInputAfterLanding = true;
 
         private Vector2 moveInput;
         private Quaternion targetRotation;
         private bool hasTargetRotation = false;
+        private bool waitingForNewInput = false;
+        private bool wasLandingLastFrame = false;
 
         private void Awake()
         {
@@ -75,10 +78,34 @@ namespace CrunchStreet.Player
         {
             if (blackboard == null || rb == null) return;
 
+            if (blackboard.IsDead)
+            {
+                rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
+                return;
+            }
+
+            if (requireNewInputAfterLanding)
+            {
+                if (!wasLandingLastFrame && blackboard.IsLanding)
+                {
+                    if (moveInput != Vector2.zero)
+                    {
+                        waitingForNewInput = true;
+                    }
+                }
+
+                if (waitingForNewInput && moveInput == Vector2.zero)
+                {
+                    waitingForNewInput = false;
+                }
+            }
+            
+            wasLandingLastFrame = blackboard.IsLanding;
+
             if (!blackboard.CanMove)
             {
                 rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
-                if (blackboard.IsGrounded && !blackboard.IsJumping && !blackboard.IsLanding)
+                if (blackboard.IsGrounded && !blackboard.IsJumping && !blackboard.IsLanding && !blackboard.IsAttacking)
                 {
                     PlayAnimation(idleTransition);
                 }
@@ -88,6 +115,12 @@ namespace CrunchStreet.Player
             // Map input to world direction
             float xInput = moveInput.x * inputScale.x;
             float yInput = moveInput.y * inputScale.y;
+
+            if (waitingForNewInput)
+            {
+                xInput = 0f;
+                yInput = 0f;
+            }
 
             Vector3 moveDir;
             if (swapAxes)
@@ -109,14 +142,14 @@ namespace CrunchStreet.Player
             {
                 targetRotation = Quaternion.LookRotation(moveDir);
                 hasTargetRotation = true;
-                if (blackboard.IsGrounded && !blackboard.IsJumping && !blackboard.IsLanding)
+                if (blackboard.IsGrounded && !blackboard.IsJumping && !blackboard.IsLanding && !blackboard.IsAttacking)
                 {
                     PlayAnimation(walkTransition);
                 }
             }
             else
             {
-                if (blackboard.IsGrounded && !blackboard.IsJumping && !blackboard.IsLanding)
+                if (blackboard.IsGrounded && !blackboard.IsJumping && !blackboard.IsLanding && !blackboard.IsAttacking)
                 {
                     PlayAnimation(idleTransition);
                 }
