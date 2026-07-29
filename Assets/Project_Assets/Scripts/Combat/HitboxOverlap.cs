@@ -4,11 +4,29 @@ using CrunchStreet.Player;
 
 namespace CrunchStreet.Combat
 {
+    public enum HitboxShape
+    {
+        Cube,
+        Sphere
+    }
+
     public abstract class HitboxOverlap : MonoBehaviour
     {
         [Header("Targeting")]
         [SerializeField] private LayerMask targetLayer;
         [SerializeField] private EntityType targetType;
+
+        [Header("Shape Settings")]
+        [SerializeField] private HitboxShape shape = HitboxShape.Cube;
+
+        [Header("Debug Settings")]
+        [SerializeField] private bool showDebugLogs = false;
+        [SerializeField] private string logPrefix = "[BasicAttack]";
+
+        [Header("Gizmo Colors")]
+        [SerializeField] private Color colorInactive = new Color(0f, 1f, 0f, 0.3f); // Verde
+        [SerializeField] private Color colorDetecting = new Color(0f, 0f, 1f, 0.3f); // Azul
+        [SerializeField] private Color colorHit = new Color(1f, 0f, 0f, 0.5f); // Rojo
 
         [Header("References")]
         [SerializeField] private PlayerCombat playerCombat;
@@ -24,26 +42,51 @@ namespace CrunchStreet.Combat
         {
             isDetecting = true;
             hasHit = false;
+            
+            if (showDebugLogs)
+            {
+                Debug.Log($"{logPrefix} Hitbox Enabled. Starting detection...");
+            }
         }
 
-        // Called via Animancer Event
         public void DisableHitbox()
         {
+            if (showDebugLogs && isDetecting && !hasHit)
+            {
+                Debug.Log($"{logPrefix} Hitbox Disabled. Did not hit any targets.");
+            }
+
             isDetecting = false;
             hasHit = false;
+
+            if (playerCombat != null)
+            {
+                playerCombat.EnableChaining();
+            }
         }
 
         private void FixedUpdate()
         {
             if (!isDetecting || hasHit) return;
 
-            Collider[] hits = Physics.OverlapBox(transform.position, transform.localScale / 2f, transform.rotation, targetLayer);
+            Collider[] hits;
+            if (shape == HitboxShape.Cube)
+            {
+                hits = Physics.OverlapBox(transform.position, transform.localScale / 2f, transform.rotation, targetLayer);
+            }
+            else
+            {
+                float radius = Mathf.Max(transform.localScale.x, transform.localScale.y, transform.localScale.z) / 2f;
+                hits = Physics.OverlapSphere(transform.position, radius, targetLayer);
+            }
             
             if (hits.Length > 0)
             {
                 IDamageable closestTarget = null;
                 float closestDistance = float.MaxValue;
                 Vector3 playerPos = transform.root.position;
+
+                int validTargetsCount = 0;
 
                 foreach (Collider hit in hits)
                 {
@@ -54,6 +97,7 @@ namespace CrunchStreet.Combat
                         IDamageable damageable = hit.GetComponentInParent<IDamageable>();
                         if (damageable != null)
                         {
+                            validTargetsCount++;
                             Vector3 targetPivotPos = entity.Pivot != null ? entity.Pivot.position : hit.transform.position;
                             float distance = Vector3.Distance(playerPos, targetPivotPos);
 
@@ -66,8 +110,20 @@ namespace CrunchStreet.Combat
                     }
                 }
 
+                if (showDebugLogs && validTargetsCount > 0)
+                {
+                    Debug.Log($"{logPrefix} Detected {hits.Length} colliders, {validTargetsCount} are valid targets.");
+                }
+
                 if (closestTarget != null)
                 {
+                    if (showDebugLogs)
+                    {
+                        MonoBehaviour targetMB = closestTarget as MonoBehaviour;
+                        string targetName = targetMB != null ? targetMB.gameObject.name : "UnknownTarget";
+                        Debug.Log($"{logPrefix} Prioritized target: {targetName} at distance {closestDistance}. Applying damage!");
+                    }
+
                     float baseDamage = playerCombat != null ? playerCombat.RuntimeDamage : 0f;
                     IAttackData attackData = GetAttackData();
                     float damageMultiplier = attackData != null ? attackData.DamageMultiplier : 1f;
@@ -83,16 +139,38 @@ namespace CrunchStreet.Combat
         {
             Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation, transform.localScale);
             
-            if (isDetecting && !hasHit)
+            Color currentColor;
+            if (hasHit)
             {
-                Gizmos.color = new Color(1f, 0f, 0f, 0.5f);
+                currentColor = colorHit;
+            }
+            else if (isDetecting)
+            {
+                currentColor = colorDetecting;
             }
             else
             {
-                Gizmos.color = new Color(0f, 1f, 0f, 0.3f);
+                currentColor = colorInactive;
             }
 
-            Gizmos.DrawCube(Vector3.zero, Vector3.one);
+            Gizmos.color = currentColor;
+
+            if (shape == HitboxShape.Cube)
+            {
+                Gizmos.DrawCube(Vector3.zero, Vector3.one);
+                
+                // Wireframe con color sólido sin transparencia
+                Gizmos.color = new Color(currentColor.r, currentColor.g, currentColor.b, 1f);
+                Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+            }
+            else if (shape == HitboxShape.Sphere)
+            {
+                Gizmos.DrawSphere(Vector3.zero, 0.5f);
+                
+                // Wireframe con color sólido sin transparencia
+                Gizmos.color = new Color(currentColor.r, currentColor.g, currentColor.b, 1f);
+                Gizmos.DrawWireSphere(Vector3.zero, 0.5f);
+            }
         }
     }
 }

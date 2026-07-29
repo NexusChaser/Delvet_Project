@@ -167,6 +167,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   targetType: 1
+  shape: 0
+  showDebugLogs: 0
+  logPrefix: '[LightAttackHitbox]'
+  colorInactive: {r: 0, g: 1, b: 0, a: 0.3}
+  colorDetecting: {r: 0, g: 0, b: 1, a: 0.3}
+  colorHit: {r: 1, g: 0, b: 0, a: 0.5}
   playerCombat: {fileID: 1109103848}
   attackSO: {fileID: 11400000, guid: a7c6417862d73934daa274bc0b737ac0, type: 2}
 --- !u!1 &242602700
@@ -217,6 +223,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   targetType: 1
+  shape: 0
+  showDebugLogs: 0
+  logPrefix: '[HeavyAttackHitbox]'
+  colorInactive: {r: 0, g: 1, b: 0, a: 0.3}
+  colorDetecting: {r: 0, g: 0, b: 1, a: 0.3}
+  colorHit: {r: 1, g: 0, b: 0, a: 0.5}
   playerCombat: {fileID: 1109103848}
   attackSO: {fileID: 11400000, guid: cbde4d6a4ea8a104cb9a75916bf5865d, type: 2}
 --- !u!1 &330585543
@@ -1203,7 +1215,7 @@ Transform:
   m_GameObject: {fileID: 1109103837}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.02, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1487,6 +1499,62 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SafeAreaController
   area: {fileID: 1247524727}
+--- !u!1 &1531798456
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1531798457}
+  - component: {fileID: 1531798458}
+  m_Layer: 7
+  m_Name: Barrido
+  m_TagString: Untagged
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1531798457
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1531798456}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.08, z: 0}
+  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1734771049}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1531798458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1531798456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 030f2f9177f4d9645af2cba903bf239c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CrunchStreet.Combat.ComboHitbox
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  targetType: 1
+  shape: 1
+  showDebugLogs: 1
+  logPrefix: '[BarridoComboHitbox]'
+  colorInactive: {r: 0, g: 1, b: 0, a: 0.3}
+  colorDetecting: {r: 0, g: 0, b: 1, a: 0.3}
+  colorHit: {r: 1, g: 0, b: 0, a: 0.5}
+  playerCombat: {fileID: 1109103848}
+  comboSO: {fileID: 11400000, guid: 1af7cd375647eed4cb8bb970f108df21, type: 2}
 --- !u!1 &1627292264
 GameObject:
   m_ObjectHideFlags: 0
@@ -1597,6 +1665,7 @@ Transform:
   m_Children:
   - {fileID: 152363640}
   - {fileID: 242602701}
+  - {fileID: 1531798457}
   m_Father: {fileID: 1109103841}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807

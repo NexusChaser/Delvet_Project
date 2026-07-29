@@ -14,36 +14,56 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CrunchStreet.Combat.BasicAttackSO
   inputType: 1
   animations:
-  - _FadeDuration: 0.25
+  - _FadeDuration: 0
     _Events:
-      _NormalizedTimes: []
+      _NormalizedTimes:
+      - 0.4090909
+      - 0.8636364
+      - NaN
       _Callbacks: []
-      _Names: []
+      _Names:
+      - EnableHitbox
+      - DisableHitbox
     _Clip: {fileID: 7400000, guid: 2a309e7f9de89cc4b9a8ca00474660a7, type: 3}
-    _Speed: 1
+    _Speed: 1.1
     _NormalizedStartTime: NaN
-  - _FadeDuration: 0.25
+  - _FadeDuration: 0
     _Events:
-      _NormalizedTimes: []
+      _NormalizedTimes:
+      - 0.5
+      - 0.8823528
+      - NaN
       _Callbacks: []
-      _Names: []
+      _Names:
+      - EnableHitbox
+      - DisableHitbox
     _Clip: {fileID: 7400000, guid: f2fdba8a6b7bbc540a4d208285dd348c, type: 3}
-    _Speed: 1
+    _Speed: 1.7
     _NormalizedStartTime: NaN
-  - _FadeDuration: 0.25
+  - _FadeDuration: 0
     _Events:
-      _NormalizedTimes: []
+      _NormalizedTimes:
+      - 0.25925925
+      - 0.48148143
+      - NaN
       _Callbacks: []
-      _Names: []
+      _Names:
+      - EnableHitbox
+      - DisableHitbox
     _Clip: {fileID: 7400000, guid: 32c188adf73f86148880cd1517bb3cb9, type: 3}
-    _Speed: 1
+    _Speed: 1.4
     _NormalizedStartTime: NaN
-  - _FadeDuration: 0.25
+  - _FadeDuration: 0
     _Events:
-      _NormalizedTimes: []
+      _NormalizedTimes:
+      - 0.32352936
+      - 0.79411757
+      - NaN
       _Callbacks: []
-      _Names: []
+      _Names:
+      - EnableHitbox
+      - DisableHitbox
     _Clip: {fileID: 7400000, guid: 19ebcbbc574ea694c8c4c123842cb4da, type: 3}
-    _Speed: 1
+    _Speed: 1.8
     _NormalizedStartTime: NaN
   damageMultiplier: 2

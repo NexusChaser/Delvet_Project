@@ -12,6 +12,7 @@ namespace CrunchStreet.Player
         [SerializeField] private CharacterBlackboard blackboard;
         [SerializeField] private GlobalPlayerProfileSO playerProfile;
         [SerializeField] private AnimancerComponent animancer;
+        private PlayerMovement playerMovement;
         
         public float RuntimeDamage { get; private set; }
 
@@ -20,9 +21,15 @@ namespace CrunchStreet.Player
 
         private List<CombatInput> currentSequence = new List<CombatInput>();
         private AnimancerState currentAttackState;
+        private Coroutine attackRoutine;
+        
+        public bool CanChainAttack { get; private set; } = true;
+        private CombatInput? bufferedInput = null;
+        private CombatInput? bufferedNextAttack = null;
 
         private void Start()
         {
+            playerMovement = GetComponent<PlayerMovement>();
             if (playerProfile != null)
             {
                 RuntimeDamage = playerProfile.BaseDamage;
@@ -32,16 +39,30 @@ namespace CrunchStreet.Player
         public void ExecuteInput(CombatInput input)
         {
             if (blackboard == null || blackboard.IsDead || playerProfile == null || playerProfile.Moveset == null) return;
+            
+            if (!CanChainAttack)
+            {
+                bufferedInput = input;
+                return;
+            }
+
             currentSequence.Add(input);
+            bufferedInput = null;
 
             // Check if current sequence matches any combo
             ComboSequenceSO matchedCombo = null;
+            bool isPartialMatch = false;
+
             foreach (var combo in playerProfile.Moveset.UnlockedCombos)
             {
-                if (IsSequenceMatch(combo.Sequence))
+                if (IsExactMatch(combo.Sequence))
                 {
                     matchedCombo = combo;
                     break;
+                }
+                else if (IsPartialMatch(combo.Sequence))
+                {
+                    isPartialMatch = true;
                 }
             }
 
@@ -50,17 +71,45 @@ namespace CrunchStreet.Player
                 PlayCombo(matchedCombo);
                 currentSequence.Clear(); // Reset sequence after combo finishes
             }
+            else if (isPartialMatch)
+            {
+                // Still building a combo. Keep it in the sequence and play the basic attack.
+                PlayBasicAttack(input);
+            }
             else
             {
-                PlayBasicAttack(input);
+                // Invalid combo! Not even a partial match.
+                currentSequence.RemoveAt(currentSequence.Count - 1);
+
+                if (blackboard.IsAttacking)
+                {
+                    // If we are currently attacking, don't interrupt. Buffer it for when the attack completely ends.
+                    bufferedNextAttack = input;
+                }
+                else
+                {
+                    // Not attacking, just play it as a basic attack
+                    PlayBasicAttack(input);
+                }
             }
         }
 
-        private bool IsSequenceMatch(CombatInput[] comboSequence)
+        private bool IsExactMatch(CombatInput[] comboSequence)
         {
             if (comboSequence.Length != currentSequence.Count) return false;
 
             for (int i = 0; i < comboSequence.Length; i++)
+            {
+                if (comboSequence[i] != currentSequence[i]) return false;
+            }
+            return true;
+        }
+
+        private bool IsPartialMatch(CombatInput[] comboSequence)
+        {
+            if (currentSequence.Count >= comboSequence.Length) return false;
+
+            for (int i = 0; i < currentSequence.Count; i++)
             {
                 if (comboSequence[i] != currentSequence[i]) return false;
             }
@@ -84,25 +133,23 @@ namespace CrunchStreet.Player
                 var clip = matchedAttack.GetRandomAnimation();
                 if (clip != null)
                 {
-                    if (currentAttackState != null)
+                    if (playerMovement != null)
                     {
-                        currentAttackState.Events.OnEnd = null;
+                        playerMovement.FaceInputDirectionInstant();
                     }
-
                     currentAttackState = animancer.Layers[0].Play(clip);
+                    currentAttackState.Time = 0f; // Force rewind
                     blackboard.IsAttacking = true;
                     blackboard.CanMove = false;
+                    CanChainAttack = false;
 
                     OnAttackExecuted?.Invoke(matchedAttack);
 
-                    // Reset sequence if the animation completely finishes without new input
-                    currentAttackState.Events.OnEnd = () => 
+                    if (attackRoutine != null)
                     {
-                        blackboard.IsAttacking = false;
-                        blackboard.CanMove = true;
-                        currentSequence.Clear();
-                        currentAttackState.Events.OnEnd = null;
-                    };
+                        StopCoroutine(attackRoutine);
+                    }
+                    attackRoutine = StartCoroutine(ResetAttackRoutine(currentAttackState));
                 }
             }
             else
@@ -116,24 +163,55 @@ namespace CrunchStreet.Player
         {
             if (combo.FinalAnimation != null)
             {
-                if (currentAttackState != null)
+                if (playerMovement != null)
                 {
-                    currentAttackState.Events.OnEnd = null;
+                    playerMovement.FaceInputDirectionInstant();
                 }
-
                 currentAttackState = animancer.Layers[0].Play(combo.FinalAnimation);
+                currentAttackState.Time = 0f; // Force rewind
                 blackboard.IsAttacking = true;
                 blackboard.CanMove = false;
+                CanChainAttack = false;
 
                 OnAttackExecuted?.Invoke(combo);
 
-                currentAttackState.Events.OnEnd = () => 
+                if (attackRoutine != null)
                 {
-                    blackboard.IsAttacking = false;
-                    blackboard.CanMove = true;
-                    currentSequence.Clear();
-                    currentAttackState.Events.OnEnd = null;
-                };
+                    StopCoroutine(attackRoutine);
+                }
+                attackRoutine = StartCoroutine(ResetAttackRoutine(currentAttackState));
+            }
+        }
+
+        private System.Collections.IEnumerator ResetAttackRoutine(AnimancerState state)
+        {
+            yield return state; // Espera a que termine la animación de Animancer
+
+            if (currentAttackState == state)
+            {
+                blackboard.IsAttacking = false;
+                blackboard.CanMove = true;
+                CanChainAttack = true;
+                bufferedInput = null;
+                currentSequence.Clear();
+
+                if (bufferedNextAttack.HasValue)
+                {
+                    CombatInput next = bufferedNextAttack.Value;
+                    bufferedNextAttack = null;
+                    ExecuteInput(next);
+                }
+            }
+        }
+
+        public void EnableChaining()
+        {
+            CanChainAttack = true;
+            if (bufferedInput.HasValue)
+            {
+                CombatInput nextInput = bufferedInput.Value;
+                bufferedInput = null;
+                ExecuteInput(nextInput);
             }
         }
     }

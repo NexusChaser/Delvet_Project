@@ -165,6 +165,31 @@ namespace CrunchStreet.Player
                 }
             }
         }
+
+        public void FaceInputDirectionInstant()
+        {
+            if (moveInput == Vector2.zero || rb == null) return;
+
+            float xInput = moveInput.x * inputScale.x;
+            float yInput = moveInput.y * inputScale.y;
+
+            Vector3 moveDir;
+            if (swapAxes)
+            {
+                moveDir = new Vector3(yInput, 0f, xInput).normalized;
+            }
+            else
+            {
+                moveDir = new Vector3(xInput, 0f, yInput).normalized;
+            }
+
+            if (moveDir != Vector3.zero)
+            {
+                targetRotation = Quaternion.LookRotation(moveDir);
+                hasTargetRotation = true;
+                rb.rotation = targetRotation;
+            }
+        }
         
         private void PlayAnimation(ClipTransition transition)
         {

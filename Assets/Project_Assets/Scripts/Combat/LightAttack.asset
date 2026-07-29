@@ -14,36 +14,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CrunchStreet.Combat.BasicAttackSO
   inputType: 0
   animations:
-  - _FadeDuration: 0.25
+  - _FadeDuration: 0
     _Events:
-      _NormalizedTimes: []
+      _NormalizedTimes:
+      - 0.3
+      - 0.7
+      - NaN
       _Callbacks: []
-      _Names: []
+      _Names:
+      - EnableHitbox
+      - DisableHitbox
     _Clip: {fileID: 7400000, guid: ee0bd1fb10dc36e44941e335cd0e5ad7, type: 3}
-    _Speed: 0.8
-    _NormalizedStartTime: NaN
-  - _FadeDuration: 0.25
-    _Events:
-      _NormalizedTimes: []
-      _Callbacks: []
-      _Names: []
-    _Clip: {fileID: 7400000, guid: 635d947060dd41649bbcfe7bc1ebb900, type: 3}
     _Speed: 1
     _NormalizedStartTime: NaN
-  - _FadeDuration: 0.25
+  - _FadeDuration: 0
     _Events:
-      _NormalizedTimes: []
+      _NormalizedTimes:
+      - 0.3125
+      - 0.8125
+      - NaN
       _Callbacks: []
-      _Names: []
-    _Clip: {fileID: 7400000, guid: e57a74680d289804c9fe05cd0a1fb6c0, type: 3}
-    _Speed: 2
-    _NormalizedStartTime: NaN
-  - _FadeDuration: 0.25
-    _Events:
-      _NormalizedTimes: []
-      _Callbacks: []
-      _Names: []
-    _Clip: {fileID: 7400000, guid: 70b25f2117c312443a1a6aa26147e2ed, type: 3}
+      _Names:
+      - EnableHitbox
+      - DisableHitbox
+    _Clip: {fileID: 7400000, guid: 635d947060dd41649bbcfe7bc1ebb900, type: 3}
     _Speed: 2
     _NormalizedStartTime: NaN
   damageMultiplier: 1
