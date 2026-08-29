@@ -37,11 +37,45 @@ namespace CrunchStreet.Combat
         // Abstract method for derived classes to supply their specific attack data
         protected abstract IAttackData GetAttackData();
 
+        protected virtual void Start()
+        {
+            if (playerCombat != null)
+            {
+                playerCombat.OnAttackEnded += ForceDisableHitbox;
+            }
+        }
+
+        protected virtual void OnDestroy()
+        {
+            if (playerCombat != null)
+            {
+                playerCombat.OnAttackEnded -= ForceDisableHitbox;
+            }
+        }
+
+        private void ForceDisableHitbox()
+        {
+            if (isDetecting)
+            {
+                isDetecting = false;
+                hasHit = false;
+                if (showDebugLogs)
+                {
+                    Debug.Log($"{logPrefix} Hitbox forcefully disabled due to attack end/interruption.");
+                }
+            }
+        }
+
         // Called via Animancer Event
         public void EnableHitbox()
         {
             isDetecting = true;
             hasHit = false;
+            
+            if (playerCombat != null)
+            {
+                playerCombat.OpenBufferWindow();
+            }
             
             if (showDebugLogs)
             {

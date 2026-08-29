@@ -23,6 +23,8 @@ namespace CrunchStreet.Player
 
         [Header("Jump Settings")]
         [SerializeField] private float jumpForce = 6f;
+        [SerializeField] private float fallGravityMultiplier = 2.5f;
+        [SerializeField] private float lowJumpGravityMultiplier = 2f;
 
         [Header("Ground Check Settings")]
         [SerializeField] private LayerMask groundLayer;
@@ -37,6 +39,8 @@ namespace CrunchStreet.Player
 
         private JumpState currentJumpState = JumpState.None;
         private bool hasLeftGround = false;
+        private bool wasAttacking = false;
+        private bool isJumpButtonHeld = false;
 
         private void Awake()
         {
@@ -82,6 +86,24 @@ namespace CrunchStreet.Player
         {
             UpdateGroundedState();
             UpdateJumpState();
+            ApplyCustomGravity();
+        }
+
+        private void ApplyCustomGravity()
+        {
+            if (rb == null || blackboard == null) return;
+            if (blackboard.IsGrounded) return;
+
+            if (rb.linearVelocity.y < 0)
+            {
+                // Falling down: fall faster for a heavier, less floaty feel
+                rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallGravityMultiplier - 1) * Time.fixedDeltaTime;
+            }
+            else if (rb.linearVelocity.y > 0 && !isJumpButtonHeld)
+            {
+                // Moving up but button released: cut the jump short
+                rb.linearVelocity += Vector3.up * Physics.gravity.y * (lowJumpGravityMultiplier - 1) * Time.fixedDeltaTime;
+            }
         }
 
         private void UpdateGroundedState()
@@ -99,6 +121,22 @@ namespace CrunchStreet.Player
             if (blackboard == null || rb == null || animancer == null) return;
             if (blackboard.IsDead) return;
 
+            bool isAttackingNow = blackboard.IsAttacking;
+            if (wasAttacking && !isAttackingNow && !blackboard.IsGrounded)
+            {
+                // An aerial attack just finished. Resume the correct aerial animation.
+                if (rb.linearVelocity.y > 0)
+                {
+                    PlayAnimation(jumpStartTransition);
+                }
+                else
+                {
+                    currentJumpState = JumpState.Falling;
+                    PlayAnimation(jumpFallTransition);
+                }
+            }
+            wasAttacking = isAttackingNow;
+
             if (!blackboard.IsGrounded)
             {
                 // We are in the air
@@ -113,47 +151,70 @@ namespace CrunchStreet.Player
                     hasLeftGround = true;
                     blackboard.IsJumping = true;
                     currentJumpState = JumpState.Falling;
-                    PlayAnimation(jumpFallTransition);
+                    if (!blackboard.IsAttacking)
+                    {
+                        PlayAnimation(jumpFallTransition);
+                    }
                 }
             }
             else
             {
                 // We are grounded
-                // Only allow landing if we actually left the ground first
-                if (hasLeftGround && currentJumpState == JumpState.Falling)
+                if (currentJumpState == JumpState.Ascending || currentJumpState == JumpState.Falling)
                 {
-                    currentJumpState = JumpState.Landing;
-                    blackboard.IsLanding = true;
-                    blackboard.CanMove = false; // Block movement during landing
-                    hasLeftGround = false;
-                    
-                    if (jumpLandTransition != null)
+                    // Only allow landing if we actually left the ground first
+                    if (hasLeftGround)
                     {
-                        var state = animancer.Layers[0].Play(jumpLandTransition);
-                        if (state != null)
+                        currentJumpState = JumpState.Landing;
+                        blackboard.IsLanding = true;
+                        blackboard.CanMove = false; // Block movement during landing
+                        hasLeftGround = false;
+                        
+                        if (jumpLandTransition != null)
                         {
-                            state.Events.OnEnd = () => 
+                            var state = animancer.Layers[0].Play(jumpLandTransition);
+                            if (state != null)
+                            {
+                                state.Events.OnEnd = () => 
+                                {
+                                    currentJumpState = JumpState.None;
+                                    blackboard.IsJumping = false;
+                                    blackboard.IsLanding = false;
+                                    blackboard.CanMove = true; // Restore movement
+                                    state.Events.OnEnd = null;
+                                };
+                            }
+                            else
                             {
                                 currentJumpState = JumpState.None;
-                                blackboard.IsJumping = false;
                                 blackboard.IsLanding = false;
-                                blackboard.CanMove = true; // Restore movement
-                                state.Events.OnEnd = null;
-                            };
+                                blackboard.CanMove = true;
+                            }
                         }
                         else
                         {
                             currentJumpState = JumpState.None;
+                            blackboard.IsJumping = false;
                             blackboard.IsLanding = false;
                             blackboard.CanMove = true;
                         }
                     }
                     else
                     {
+                        // We are grounded but never left the ground, safely reset
                         currentJumpState = JumpState.None;
                         blackboard.IsJumping = false;
                         blackboard.IsLanding = false;
-                        blackboard.CanMove = true;
+                    }
+                }
+                else if (currentJumpState == JumpState.Landing)
+                {
+                    // If the landing animation was interrupted by an attack or dodge, clean up state
+                    if (blackboard.IsAttacking || blackboard.IsDodging)
+                    {
+                        currentJumpState = JumpState.None;
+                        blackboard.IsJumping = false;
+                        blackboard.IsLanding = false;
                     }
                 }
             }
@@ -164,7 +225,12 @@ namespace CrunchStreet.Player
         {
             if (context.performed)
             {
+                isJumpButtonHeld = true;
                 TryJump();
+            }
+            else if (context.canceled)
+            {
+                isJumpButtonHeld = false;
             }
         }
 
@@ -192,7 +258,10 @@ namespace CrunchStreet.Player
                             if (currentJumpState == JumpState.Ascending)
                             {
                                 currentJumpState = JumpState.Falling;
-                                PlayAnimation(jumpFallTransition);
+                                if (!blackboard.IsAttacking)
+                                {
+                                    PlayAnimation(jumpFallTransition);
+                                }
                             }
                             state.Events.OnEnd = null;
                         };

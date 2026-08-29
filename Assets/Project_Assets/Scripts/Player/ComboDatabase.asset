@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CrunchStreet.Combat.ComboDatabaseSO
   allCombos:
   - {fileID: 11400000, guid: 1af7cd375647eed4cb8bb970f108df21, type: 2}
+  - {fileID: 11400000, guid: c822ea1340286e54ba8f919eab069c4f, type: 2}
+  - {fileID: 11400000, guid: e2b933b31635dfb42841fdafe97e7a8e, type: 2}
   allBasicAttacks:
   - {fileID: 11400000, guid: a7c6417862d73934daa274bc0b737ac0, type: 2}
   - {fileID: 11400000, guid: cbde4d6a4ea8a104cb9a75916bf5865d, type: 2}

@@ -9,6 +9,7 @@ namespace CrunchStreet.Combat
     {
         [Header("Input")]
         [SerializeField] private CombatInput inputType;
+        [SerializeField] private bool isAerial = false;
 
         [Header("Animation Variants")]
         [SerializeField] private ClipTransition[] animations;
@@ -17,6 +18,7 @@ namespace CrunchStreet.Combat
         [SerializeField] private float damageMultiplier = 1f;
 
         public CombatInput InputType => inputType;
+        public bool IsAerial => isAerial;
         public ClipTransition[] Animations => animations;
         public float DamageMultiplier => damageMultiplier;
 

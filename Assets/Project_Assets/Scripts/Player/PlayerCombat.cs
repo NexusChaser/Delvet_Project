@@ -18,12 +18,16 @@ namespace CrunchStreet.Player
 
         // This event broadcasts whenever an attack is executed, allowing ComboListeners to react.
         public event Action<IAttackData> OnAttackExecuted;
+        
+        // This event broadcasts when an attack completely finishes or is abruptly interrupted.
+        public event Action OnAttackEnded;
 
         private List<CombatInput> currentSequence = new List<CombatInput>();
         private AnimancerState currentAttackState;
         private Coroutine attackRoutine;
         
         public bool CanChainAttack { get; private set; } = true;
+        public bool isBufferWindowOpen { get; private set; } = false;
         private CombatInput? bufferedInput = null;
         private CombatInput? bufferedNextAttack = null;
 
@@ -42,7 +46,11 @@ namespace CrunchStreet.Player
             
             if (!CanChainAttack)
             {
-                bufferedInput = input;
+                if (isBufferWindowOpen)
+                {
+                    // Overwrite so only the LAST input pressed in the valid window is executed
+                    bufferedInput = input;
+                }
                 return;
             }
 
@@ -53,8 +61,12 @@ namespace CrunchStreet.Player
             ComboSequenceSO matchedCombo = null;
             bool isPartialMatch = false;
 
+            bool isAirborne = !blackboard.IsGrounded;
+
             foreach (var combo in playerProfile.Moveset.UnlockedCombos)
             {
+                if (combo.IsAerial != isAirborne) continue;
+
                 if (IsExactMatch(combo.Sequence))
                 {
                     matchedCombo = combo;
@@ -118,10 +130,12 @@ namespace CrunchStreet.Player
 
         private void PlayBasicAttack(CombatInput input)
         {
+            bool isAirborne = !blackboard.IsGrounded;
             BasicAttackSO matchedAttack = null;
+
             foreach (var atk in playerProfile.Moveset.UnlockedBasicAttacks)
             {
-                if (atk.InputType == input)
+                if (atk.InputType == input && atk.IsAerial == isAirborne)
                 {
                     matchedAttack = atk;
                     break;
@@ -142,12 +156,15 @@ namespace CrunchStreet.Player
                     blackboard.IsAttacking = true;
                     blackboard.CanMove = false;
                     CanChainAttack = false;
+                    isBufferWindowOpen = false;
+                    bufferedInput = null;
 
                     OnAttackExecuted?.Invoke(matchedAttack);
 
                     if (attackRoutine != null)
                     {
                         StopCoroutine(attackRoutine);
+                        OnAttackEnded?.Invoke(); // Force disable previous hitboxes
                     }
                     attackRoutine = StartCoroutine(ResetAttackRoutine(currentAttackState));
                 }
@@ -172,12 +189,15 @@ namespace CrunchStreet.Player
                 blackboard.IsAttacking = true;
                 blackboard.CanMove = false;
                 CanChainAttack = false;
+                isBufferWindowOpen = false;
+                bufferedInput = null;
 
                 OnAttackExecuted?.Invoke(combo);
 
                 if (attackRoutine != null)
                 {
                     StopCoroutine(attackRoutine);
+                    OnAttackEnded?.Invoke(); // Force disable previous hitboxes
                 }
                 attackRoutine = StartCoroutine(ResetAttackRoutine(currentAttackState));
             }
@@ -192,8 +212,11 @@ namespace CrunchStreet.Player
                 blackboard.IsAttacking = false;
                 blackboard.CanMove = true;
                 CanChainAttack = true;
+                isBufferWindowOpen = false;
                 bufferedInput = null;
                 currentSequence.Clear();
+                
+                OnAttackEnded?.Invoke();
 
                 if (bufferedNextAttack.HasValue)
                 {
@@ -204,9 +227,15 @@ namespace CrunchStreet.Player
             }
         }
 
+        public void OpenBufferWindow()
+        {
+            isBufferWindowOpen = true;
+        }
+
         public void EnableChaining()
         {
             CanChainAttack = true;
+            isBufferWindowOpen = false;
             if (bufferedInput.HasValue)
             {
                 CombatInput nextInput = bufferedInput.Value;
